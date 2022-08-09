@@ -1,0 +1,66 @@
+{
+    "name": "digikraaft/laravel-posts",
+    "description": "Add posts functionality to your laravel app",
+    "keywords": [
+        "digikraaft",
+        "blog",
+        "laravel",
+        "posts"
+    ],
+    "homepage": "https://github.com/digikraaft/laravel-posts",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tim Oladoyinbo",
+            "email": "hello@digikraaft.ng",
+            "homepage": "https://digikraaft.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "illuminate/contracts": "^9.0",
+        "rinvex/laravel-categories": "^6.1",
+        "spatie/laravel-activitylog": "^4.5",
+        "spatie/laravel-model-status": "^1.11",
+        "spatie/laravel-sluggable": "^3.4",
+        "spatie/laravel-tags": "^4.3",
+        "spatie/laravel-translatable": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Digikraaft\\LaravelPosts\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Digikraaft\\LaravelPosts\\Tests\\": "tests"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/laravel-shift/uniquewith-validator.git"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Digikraaft\\LaravelPosts\\LaravelPostsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

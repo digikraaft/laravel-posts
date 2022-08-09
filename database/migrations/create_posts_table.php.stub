@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreatePostsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('laravel-posts.posts_table_name', 'dk_posts'), function (Blueprint $table) {
+            $table->id('id');
+            $table->uuid('uuid')->unique();
+            $table->string('title');
+            $table->string('slug');
+            $table->text('content');
+            $table->morphs('author');
+            $table->json('meta')->nullable();
+            $table->timestamps();
+            $table->dateTime('published_at');
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('laravel-posts.post.table_name', 'dk_posts'));
+    }
+}
