@@ -4,7 +4,6 @@
 namespace Digikraaft\LaravelPosts\Events;
 
 use Digikraaft\LaravelPosts\Models\Post;
-use Illuminate\Database\Eloquent\Model;
 
 class PostCreatedEvent
 {

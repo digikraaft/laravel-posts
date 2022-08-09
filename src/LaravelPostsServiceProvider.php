@@ -2,8 +2,8 @@
 
 namespace Digikraaft\LaravelPosts;
 
-use Digikraaft\LaravelPosts\Models\Post;
 use Digikraaft\LaravelPosts\Exceptions\InvalidPostModel;
+use Digikraaft\LaravelPosts\Models\Post;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
