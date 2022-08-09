@@ -1,8 +1,8 @@
-# Add Review and Rating Feature to your Laravel application
-![tests](https://github.com/digikraaft/laravel-review-rating/workflows/tests/badge.svg?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-review-rating/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-review-rating/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/digikraaft/laravel-review-rating/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
+# Add basic blog functionality to your Laravel app.
+![tests](https://github.com/digikraaft/laravel-posts/workflows/tests/badge.svg?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/?branch=master)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## Review and Rating System for Laravel
@@ -40,7 +40,7 @@ $model->latestReview()->title; //returns 'Lovely packages'
 You can install the package via composer:
 
 ```bash
-composer require digikraaft/laravel-review-rating
+composer require digikraaft/laravel-posts
 ```
 You must publish the migration with:
 ```bash

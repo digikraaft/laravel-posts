@@ -21,6 +21,7 @@ use Spatie\Translatable\HasTranslations;
 class Post extends Model
 {
     protected $guarded = [];
+    public $translatable = ['title', 'slug', 'content'];
 
     use HasTags, HasStatuses, Categorizable, LogsActivity, HasTranslations, HasTranslatableSlug;
 
@@ -37,7 +38,18 @@ class Post extends Model
     {
         return SlugOptions::create()
             ->generateSlugsFrom(config('laravel-posts.generate_slug_from', 'title'))
-            ->saveSlugsTo(config('laravel-posts.save_slug_to', 'slug'));
+            ->saveSlugsTo(config('laravel-posts.save_slug_to', 'slug'))
+            ->doNotGenerateSlugsOnUpdate();
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     /**

@@ -16,8 +16,8 @@ class CreatePostsTable extends Migration
         Schema::create(config('laravel-posts.posts_table_name', 'dk_posts'), function (Blueprint $table) {
             $table->id('id');
             $table->uuid('uuid')->unique();
-            $table->string('title');
-            $table->string('slug');
+            $table->text('title');
+            $table->text('slug');
             $table->text('content');
             $table->morphs('author');
             $table->json('meta')->nullable();
