@@ -1,39 +1,45 @@
-# Add basic blog functionality to your Laravel app.
+# Add basic Blog/Post functionality to your Laravel app.
 ![tests](https://github.com/digikraaft/laravel-posts/workflows/tests/badge.svg?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/?branch=master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## Review and Rating System for Laravel
-This package provides a simple review and rating system for Laravel. It supports
-Laravel 5.8 an up. Here is a quick demonstration of how it can be used:
+## Why this package?
+This package provides a simple blog functionality for use in a Laravel app. This is an opinionated package. We have had to implement blog functionalities in different Laravel projects and decided to abstract this into a package which can be easily used across our projects. If you find it useful and meets your needs, by all means please use it. Suggested improvements are welcome.
 
+## Notes on dependencies
+This package uses the following dependencies. Please ensure to follow the installation and usage instructions from their respective repositories:
+
+- [Laravel Categories](https://github.com/rinvex/laravel-categories) by [Rinvex](https://github.com/rinvex)
+- [Laravel Sluggagle](https://github.com/spatie/laravel-sluggable) by [Spatie](https://github.com/spatie)
+- [Laravel Translatable](https://github.com/spatie/laravel-translatable) by [Spatie](https://github.com/spatie)
+- [Laravel ActivityLog](https://github.com/spatie/laravel-activitylog) by [Spatie](https://github.com/spatie)
+- [Laravel Model Status](https://github.com/spatie/laravel-model-status) by [Spatie](https://github.com/spatie)
+- [Laravel Model Status](https://github.com/spatie/laravel-model-status) by [Spatie](https://github.com/spatie)
+- [Laravel Tags](https://github.com/spatie/laravel-tags) by [Spatie](https://github.com/spatie)
+
+## Usage 
 ```php
-//create a review
+use Digikraaft\LaravelPosts\Models\Post;
+
+// Create a post
+$title = 'My first Post';
+$content = 'Not really sure of what to write here! Can I get some help please?';
+Post::create($title, $content);
+
+// Create post with more attributes
+$title = 'My Second Post';
+$content = 'I may just need to get the services of a content writer. Thoughts?';
 $author = User::find(1);
-$review = "Awesome package! I highly recommend it!!";
-
-$model->review($review, $author);
-
-//write a review and include a rating
-$model->review($review, $author, 5);
-
-//write a review and include a rating and a title
-$model->review($review, $author, 5, "Lovely packages");
-
-//get the last review
-$model->latestReview(); //returns an instance of \Digikraaft\ReviewRating\Post
-
-//get the review content of the last review
-$model->latestReview()->review; //returns 'Awesome package! I highly recommend it!!'
-
-//get the rating of the last review
-$model->latestReview()->rating; //return 5
-
-//get the title of the last review
-$model->latestReview()->title; //returns 'Lovely packages'
+$additionalDetails = [
+    'author' => $author,
+    'created_at' => \Illuminate\Support\Carbon::now(),
+    'published_at' => \Illuminate\Support\Carbon::now(),
+];
+$post = Post::create($title, $content, $additionalDetails);
 ```
+Please note that the author `$author` must be an eloquent model otherwise an exception `Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException` will be thrown.
 
 ## Installation
 
@@ -44,214 +50,185 @@ composer require digikraaft/laravel-posts
 ```
 You must publish the migration with:
 ```bash
-php artisan vendor:publish --provider="Digikraaft\ReviewRating\ReviewRatingServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Digikraaft\LaravelPosts\LaravelPostsServiceProvider" --tag="migrations"
 ```
-Run the migration to publish the `reviews` table with:
+Run the migration to publish the posts table with:
 ```bash
 php artisan migrate
 ```
 You can optionally publish the config-file with:
 ```bash
-php artisan vendor:publish --provider="Digikraaft\ReviewRating\ReviewRatingServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Digikraaft\LaravelPosts\LaravelPostsServiceProvider" --tag="config"
 ```
-The content of the file that will be published to `config/review-rating.php`:
+The content of the file that will be published to `config/laravel-posts.php`:
 ```php
 return [
     /*
-      * The class name of the review model that holds all reviews.
-      *
-      * The model must be or extend `Digikraaft\ReviewRating\Post`.
-      */
-    'review_model' => Digikraaft\ReviewRating\Models\Post::class,
-
-    /*
-     * The name of the column which holds the ID of the model related to the reviews.
+     * The name of the column which holds the ID of the model that is the author of the posts.
      *
-     * Only change this value if you have set a different name in the migration for the reviews table.
+     * Only change this value if you have set a different name in the migration for the posts table.
      */
     'model_primary_key_attribute' => 'model_id',
 
+    /*
+     * The table name where your posts will be stored.
+     */
+    'posts_table_name' => 'dk_posts',
+
+    /*
+     * The column name where posts slug should be generated from
+     */
+    'generate_slug_from' => 'title',
+
+     /*
+     * The column name where slugs should be saved to
+     */
+    'save_slug_to' => 'slug',
+
 ];
 ```
+
 ## Usage
-Add the `HasReviewRating` trait to the model:
+### Create a post
 ```php
-use Digikraaft\ReviewRating\Traits\HasReviewRating;
-use Illuminate\Database\Eloquent\Model;
+use Digikraaft\LaravelPosts\Models\Post;
 
-class EloquentModel extends Model
-{
-    use HasReviewRating;
-}
+// create a post
+$title = 'My first Post';
+$content = 'Not really sure of what to write here! Can I get some help please?';
+Post::create($title, $content);
 ```
 
-### Create a review
-To create a review, use the `review` function of the trait.
-Like this:
+### Create post with attributes
 ```php
+use Digikraaft\LaravelPosts\Models\Post;
+
+// create post with more attributes
+$title = 'My Second Post';
+$content = 'I may just need to get the services of a content writer. Thoughts?';
 $author = User::find(1);
-$review = "Awesome package! I highly recommend it!!";
-
-$model->review($review, $author);
+$additionalDetails = [
+    'author' => $author,
+    'updated_at' => \Illuminate\Support\Carbon::now(),
+    'created_at' => \Illuminate\Support\Carbon::now(),
+    'published_at' => \Illuminate\Support\Carbon::now(),
+];
+$post = Post::create($title, $content, $additionalDetails);
 ```
-The first argument is the content of the review while the second argument is the author.
-This can be any Eloquent model.
+Please note that the author `$author` must be an eloquent model otherwise an exception `Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException` will be thrown.
 
-To create a review with rating, pass in the rating value as the third argument of
-the `review` function. Valid values are `int`s and `float`s:
+All attributes are optional. If you need to add additional information about a post, you can use the `meta` attribute like this:
 ```php
+use Digikraaft\LaravelPosts\Models\Post;
+
+
+$title = "Post title";
+$content = "Post content";
+
+$additionalDetails = [
+    'meta' => [
+        'seo_title' => 'SEO Title'
+    ]   
+];
+Post::create($title, $content, $additionalDetails);
+```
+
+### Create post with custom attributes
+If you need to save specific information on a post, you can do it by using custom attributes.
+```php
+use Digikraaft\LaravelPosts\Models\Post;
+
+// Create post with custom attributes
+$title = 'My Third Post';
+$content = 'At this point, it amazes me why I can\'t seem to find the right words!';
 $author = User::find(1);
-$review = "Awesome package! I highly recommend it!!";
+$customDetails = [
+    'custom_key' => $author,
+];
+$post = Post::create($title, $content, $customDetails);
+```
+Please ensure you have added the attributes as columns to the posts migration otherwise, Laravel will throw an exception.
 
-$model->review($review, $author, 5);
-```
+### Retrieving Posts
+The Post model is a normal eloquent model so all eloquent functions and query builder can be used in retrieving posts.
 
-To create a review with rating and title, add the title as the fourth argument
-of the `review` function:
 ```php
-$author = User::find(1);
-$review = "Awesome package! I highly recommend it!!";
+use Digikraaft\LaravelPosts\Models\Post;
 
-$model->review($review, $author, 5, "Lovely packages");
-```
+//Retrieve post by id
+Post::find(1);
 
-You can also check if user has reviewed the model by using the `hasReviewed` function:
-```php
-    if ($model->hasReviewed(auth()->user())) {
-        // user has reviewed the model
-    }
-```
+//Retrieve post by slug
+Post::where('slug', 'post-title-1')->get();
 
-### Retrieving reviews
-You can get the last review like this:
-```php
-$model->latestReview(); //returns the latest instance of Digikraaft\ReviewRating\Post
-```
-The content of the review can be gotten like this:
-```php
-$model->latestReview()->review;
-```
-To get the rating for the review, do this:
-```php
-$model->latestReview()->rating;
-```
-To get the title of the review:
-```php
-$model->latestReview()->title;
-```
-All reviews can be retrieved like this:
-```php
-$model->reviews;
-```
-To access each review from the reviews retrieved, do this:
-```php
-$reviews = $model->reviews;
+//Retrieve post instance by slug
+$post = Post::whereSlug('post-title-1');
 
-foreach($reviews as $review){
-    echo $review->review . "<br>";
-}
-```
-The `allReviews` scope can be used to retrieve all the reviews for all instances of a model:
-```php
-$allReviews = EloquentModel::allReviews();
-```
-### Retrieving basic Review Stats
-You can get the number of reviews a model has:
-```php
-$model->numberOfReviews();
-```
-To get the number of reviews a model has received over a period,
-pass in a `Carbon` formatted `$from` and `$to` dates as the first and second
-arguments respectively:
-```php
-//get the number of reviews a model has received over the last month
+//Retrieve all published posts. Published posts are posts where published_at date is today or in the past
+Post::published();
+
+//Retrieve all published posts within a period
 $from = now()->subMonth();
 $to = now();
+Post::published($from, $to);
+//Note that an `InvalidDate` exception will be thrown if the $from date is later than the $to
 
-$model->numberOfReviews($from, $to);
-```
-Note that an `InvalidDate` exception will be thrown if the `$from` date is later than the `$to`
 
-You can get the number of ratings a model has:
-```php
-$model->numberOfRatings();
-```
-To get the number of ratings a model has received over a period,
-pass in a `Carbon` formatted `$from` and `$to` dates as the first and second
-arguments respectively:
-```php
-//get the number of reviews a model has received over the last month
-$from = now()->subMonth();
-$to = now();
+//Retrieve all scheduled posts. Scheduled posts are posts with published_at date in the future
+Post::scheduled();
 
-$model->numberOfRatings($from, $to);
-```
-To get the average rating a model has received:
-```php
-$model->averageRating();
-```
-The average rating that is returned is by default not rounded.
-If you would like to `round` the returned result, pass an integer value of the
-decimal place you want it rounded to.
-```php
-//round up to 2 decimal places
-$model->averageRating(2);
-```
-To get the average rating a model has received over a period,
-pass in a `Carbon` formatted `$from` and `$to` dates as the first and second
-arguments respectively:
-```php
-//get the average rating a model has received over the last month, rounded to 2 decimal places:
-$from = now()->subMonth();
-$to = now();
+//Retrieve all scheduled posts within a period
+$from = now();
+$to = now()->addMonth();
+Post::scheduled($from, $to);
 
-$model->averageRating(2, $from, $to);
+//retrieve all posts by author
+$author = User::find(1);
+Post::byAuthor($author);
 ```
-The `withRatings` scope can be used to retrieve all the reviews that have a rating for all instances of a model:
-```php
-$allReviewsWithRating = EloquentModel::withRatings();
-```
+For more ways to retrieve posts and use the dependencies, check usage instructions of the following packages:
 
-### Check if model has review
-You can check if a model has at least one review:
+- [Posts Categories](https://github.com/rinvex/laravel-categories)
+- [Posts Translations](https://github.com/spatie/laravel-translatable)
+- [Laravel ActivityLog](https://github.com/spatie/laravel-activitylog)
+- [Post Status](https://github.com/spatie/laravel-model-status)
+- [Post Tags](https://github.com/spatie/laravel-tags)
+- [Post Slug](https://github.com/spatie/laravel-sluggable)
+
+#### Retrieving basic Post Stats
+You can get the reading time of a post:
 ```php
-$model->hasReview();
-```
-### Check if model has rating
-You can check if a model has at least one rating:
-```php
-$model->hasRating();
+use Digikraaft\LaravelPosts\Models\Post;
+
+$post = Post::find(1);
+$post->readingTime(); // returns reading time in minutes
 ```
 
 ### Events
-The `Digikraaft\ReviewRating\Events\ReviewCreatedEvent` event will be dispatched when 
-a review has been created. You can listen to this event and take necessary actions.
-An instance of the review will be passed to the event class and can be accessed for use:
+The `Digikraaft\LaravelPosts\Events\PostCreatedEvent` event will be dispatched when a post has been created. You can listen to this event and take necessary actions.
+An instance of the post will be passed to the event class and can be accessed for use:
 ```php
-namespace Digikraaft\ReviewRating\Events;
+namespace Digikraaft\LaravelPosts\Events;
 
-use Digikraaft\ReviewRating\Models\Post;
-use Illuminate\Database\Eloquent\Model;
+use Digikraaft\LaravelPosts\Models\Post;
 
-class ReviewCreatedEvent
+class PostCreatedEvent
 {
-    /** @var \Digikraaft\ReviewRating\Models\Post */
-    public Post $review;
+    /** @var \Digikraaft\LaravelPosts\Models\Post */
+    public Post $post;
 
-    public function __construct(Post $review)
+    public function __construct(Post $post)
     {
-        $this->review = $review;
+        $this->post = $post;
     }
 }
 ```
 
 ### Custom model and migration
-You can change the model used by specifying a different class name in the 
-`review_model` key of the `review-rating` config file.
+You can change the model used by extending the `Digikraaft\LaravelPosts\Models\Post` class.
 
-You can also change the column name used in the `reviews` table 
-(default is `model_id`) when using a custom migration. If this is the case,
-also change the `model_primary_key_attribute` key of the `review-rating` config file.
+You can also change the column name used in the `dk_posts` table 
+(default is `model_id`) when using a custom migration. If this is the case, also change the `model_primary_key_attribute` key of the `laravel-posts` config file.
 
 ## Testing
 Use the command below to run your tests:

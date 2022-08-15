@@ -2,10 +2,11 @@
 
 namespace Digikraaft\LaravelPosts\Models;
 
-use Carbon\Carbon;
 use Digikraaft\LaravelPosts\Events\PostCreatedEvent;
 use Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException;
+use Digikraaft\LaravelPosts\Exceptions\InvalidDate;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Rinvex\Categories\Traits\Categorizable;
 use Spatie\Activitylog\LogOptions;
@@ -25,8 +26,6 @@ class Post extends Model
 
     use HasTags, HasStatuses, Categorizable, LogsActivity, HasTranslations, HasTranslatableSlug;
 
-    //author class - traits
-
     protected $casts = [
         'meta' => 'array',
     ];
@@ -40,6 +39,12 @@ class Post extends Model
             ->generateSlugsFrom(config('laravel-posts.generate_slug_from', 'title'))
             ->saveSlugsTo(config('laravel-posts.save_slug_to', 'slug'))
             ->doNotGenerateSlugsOnUpdate();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'content', 'meta']);
     }
 
     /**
@@ -71,7 +76,7 @@ class Post extends Model
      */
     public static function create(string $title, string $content, ... $params) : Post
     {
-        if(! isset($params['author'])){
+        if(isset($params['author'])){
             static::guardAgainstInvalidAuthorModel($params['author']);
         }
 
@@ -84,19 +89,33 @@ class Post extends Model
         ];
         $customData = Arr::except($params, $defaultColumns);
 
-        $post = Post::query()->create([
-            'uuid' => Str::uuid(),
-            'title' => $title,
-            'content' => $content,
-            'author_id' => $params['author']? $params['author']->getKeyName() : null,
-            'author_type' => $params['author']? $params['author']->getMorphClass() : null,
-            'meta' => $params['meta'] ?? null,
-            'created_at' => $params['created_at'] ?? Carbon::now(),
-            'updated_at' => $params['updated_at'] ?? Carbon::now(),
-            'published_at' => $params['published_at'] ?? Carbon::now(),
-            $customData,
-        ]);
-
+        if(empty($customData)){
+            $post = Post::query()->create([
+                'uuid' => Str::uuid(),
+                'title' => $title,
+                'content' => $content,
+                'author_id' => $params['author']? $params['author']->getKeyName() : null,
+                'author_type' => $params['author']? $params['author']->getMorphClass() : null,
+                'meta' => $params['meta'] ?? null,
+                'created_at' => $params['created_at'] ?? Carbon::now(),
+                'updated_at' => $params['updated_at'] ?? Carbon::now(),
+                'published_at' => $params['published_at'] ?? Carbon::now(),
+            ]);
+        }else{
+            $post = Post::query()->create([
+                'uuid' => Str::uuid(),
+                'title' => $title,
+                'content' => $content,
+                'author_id' => $params['author']? $params['author']->getKeyName() : null,
+                'author_type' => $params['author']? $params['author']->getMorphClass() : null,
+                'meta' => $params['meta'] ?? null,
+                'created_at' => $params['created_at'] ?? Carbon::now(),
+                'updated_at' => $params['updated_at'] ?? Carbon::now(),
+                'published_at' => $params['published_at'] ?? Carbon::now(),
+                $customData,
+            ]);
+        }
+//        $post = Post::query()->where('uuid')
         event(new PostCreatedEvent($post));
         return $post;
     }
@@ -125,8 +144,48 @@ class Post extends Model
         return Str::readingTime($content);
     }
 
-    public function getActivitylogOptions(): LogOptions
+    public static function whereSlug(string $slug)
     {
-        // TODO: Implement getActivitylogOptions() method.
+        return static::query()->where('slug', $slug)->first();
     }
+
+    public static function published(?Carbon $from = null, ?Carbon $to = null)
+    {
+        if (!$from && !$to) {
+            return Post::query()->where('published_at', '<=', Carbon::now())->get();
+        }
+
+        if ($from->greaterThan($to)) {
+            throw InvalidDate::from();
+        }
+
+        return Post::query()->where('published_at', '<=', Carbon::now())->whereBetween(
+            'published_at',
+            [$from->toDateTimeString(), $to->toDateTimeString()]
+        )->get();
+    }
+
+    public static function scheduled(?Carbon $from = null, ?Carbon $to = null)
+    {
+        if (!$from && !$to) {
+            return Post::query()->where('published_at', '>=', Carbon::now())->get();
+        }
+
+        if ($from->greaterThan($to)) {
+            throw InvalidDate::from();
+        }
+
+        return Post::query()->where('published_at', '>=', Carbon::now())->whereBetween(
+            'published_at',
+            [$from->toDateTimeString(), $to->toDateTimeString()]
+        )->get();
+    }
+
+    public static function byAuthor($author)
+    {
+        static::guardAgainstInvalidAuthorModel($author);
+
+        return Post::query()->where('author_id', $author->getKeyName())->where('author_type', $author->getMorphClass())->get();
+    }
+
 }
