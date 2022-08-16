@@ -5,6 +5,8 @@ namespace Digikraaft\LaravelPosts\Models;
 use Digikraaft\LaravelPosts\Events\PostCreatedEvent;
 use Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException;
 use Digikraaft\LaravelPosts\Exceptions\InvalidDate;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -14,8 +16,6 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\ModelStatus\HasStatuses;
 use Spatie\Sluggable\HasTranslatableSlug;
 use Spatie\Sluggable\SlugOptions;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Tags\HasTags;
 use Spatie\Translatable\HasTranslations;
 
@@ -74,9 +74,9 @@ class Post extends Model
      * @return Post | \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      * @throws InvalidArgumentException
      */
-    public static function create(string $title, string $content, ... $params) : Post
+    public static function create(string $title, string $content, ...$params) : Post
     {
-        if(isset($params['author'])){
+        if (! isset($params['author'])) {
             static::guardAgainstInvalidAuthorModel($params['author']);
         }
 
@@ -117,12 +117,8 @@ class Post extends Model
         }
 //        $post = Post::query()->where('uuid')
         event(new PostCreatedEvent($post));
-        return $post;
-    }
 
-    public function model(): MorphTo
-    {
-        return $this->morphTo();
+        return $post;
     }
 
     public function author(): MorphTo
@@ -132,7 +128,6 @@ class Post extends Model
 
     private static function guardAgainstInvalidAuthorModel($author)
     {
-
         if (! is_a($author, Model::class, true)) {
             throw InvalidArgumentException::invalidAuthorModel($author);
         }
@@ -141,6 +136,7 @@ class Post extends Model
     public function readingTime(bool $stripTags = true)
     {
         $content = $stripTags? strip_tags($this->content) : $this->content;
+
         return Str::readingTime($content);
     }
 
