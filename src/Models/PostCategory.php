@@ -10,9 +10,10 @@
     {
         public static function create(array $attributes)
         {
-            if(empty($attributes)){
+            if (empty($attributes)) {
                 throw InvalidArgumentException::invalidPostCategoryArgument();
             }
+
             return app('rinvex.categories.category')->create($attributes);
         }
     }
