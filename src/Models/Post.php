@@ -89,7 +89,7 @@ class Post extends Model
         ];
         $customData = Arr::except($params, $defaultColumns);
 
-        if(empty($customData)){
+        if (empty($customData)) {
             $post = Post::query()->create([
                 'uuid' => Str::uuid(),
                 'title' => $title,
@@ -101,7 +101,7 @@ class Post extends Model
                 'updated_at' => $params['updated_at'] ?? Carbon::now(),
                 'published_at' => $params['published_at'] ?? Carbon::now(),
             ]);
-        }else{
+        } else {
             $post = Post::query()->create([
                 'uuid' => Str::uuid(),
                 'title' => $title,
@@ -147,7 +147,7 @@ class Post extends Model
 
     public static function published(?Carbon $from = null, ?Carbon $to = null)
     {
-        if (!$from && !$to) {
+        if (! $from && ! $to) {
             return Post::query()->where('published_at', '<=', Carbon::now())->get();
         }
 
@@ -163,7 +163,7 @@ class Post extends Model
 
     public static function scheduled(?Carbon $from = null, ?Carbon $to = null)
     {
-        if (!$from && !$to) {
+        if (! $from && ! $to) {
             return Post::query()->where('published_at', '>=', Carbon::now())->get();
         }
 
@@ -183,5 +183,4 @@ class Post extends Model
 
         return Post::query()->where('author_id', $author->getKeyName())->where('author_type', $author->getMorphClass())->get();
     }
-
 }

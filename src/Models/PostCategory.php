@@ -3,7 +3,6 @@
 
     namespace Digikraaft\LaravelPosts\Models;
 
-
     use Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException;
     use Rinvex\Categories\Models\Category;
 
