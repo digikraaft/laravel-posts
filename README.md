@@ -204,6 +204,31 @@ $post = Post::find(1);
 $post->readingTime(); // returns reading time in minutes
 ```
 
+### Using Slug
+This package uses [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) by [Spatie](https://github.com/spatie) to handle categories. Please check their usage and installation instructions.
+
+### Using Categories
+This package uses [Laravel Categories](https://github.com/rinvex/laravel-categories) by [Rinvex](https://github.com/rinvex) to handle categories. Please check the usage and installation instructions. This package however has helper classes to create
+
+```php
+use Digikraaft\LaravelPosts\Models\Post;
+use Digikraaft\LaravelPosts\Models\PostCategory;
+
+//create categories
+$attributes = ['name' => 'News', 'slug' => 'news'];
+PostCategory::create($attributes);
+
+//attach categories
+$post = Post::find(1);
+$post->attachCategories(['first-category', 'second-category']);
+
+// Get attached categories collection
+$post->categories;
+
+// Get attached categories query builder
+$post->categories();
+```
+
 ### Events
 The `Digikraaft\LaravelPosts\Events\PostCreatedEvent` event will be dispatched when a post has been created. You can listen to this event and take necessary actions.
 An instance of the post will be passed to the event class and can be accessed for use:

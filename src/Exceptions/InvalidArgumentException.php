@@ -15,4 +15,9 @@
         {
             return new static("Invalid Author model. Author model must be an Eloquent model and therefore must extend ". Model::class);
         }
+
+        public static function invalidPostCategoryArgument()
+        {
+            return new static ("Invalid Post Category");
+        }
     }
