@@ -9,7 +9,6 @@ use Digikraaft\LaravelPosts\Models\Post;
 use Digikraaft\LaravelPosts\Tests\Models\InvalidAuthorModel;
 use Digikraaft\LaravelPosts\Tests\Models\TestAuthorModel;
 use Digikraaft\LaravelPosts\Tests\Models\TestModel;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 class PostsTest extends TestCase
@@ -47,8 +46,8 @@ class PostsTest extends TestCase
     {
         $meta = [
             "meta" => [
-                "info" => "some meta text"
-            ]
+                "info" => "some meta text",
+            ],
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals('Another Post', $post->title);
@@ -62,7 +61,7 @@ class PostsTest extends TestCase
     public function it_can_create_post_with_author()
     {
         $meta = [
-            'author' => $this->author
+            'author' => $this->author,
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals('Another Post', $post->title);
@@ -76,7 +75,7 @@ class PostsTest extends TestCase
     public function it_throws_error_when_invalid_author_is_used()
     {
         $meta = [
-            'author' => InvalidAuthorModel::class
+            'author' => InvalidAuthorModel::class,
         ];
         $this->expectException(InvalidArgumentException::class);
         Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
@@ -88,7 +87,7 @@ class PostsTest extends TestCase
     public function it_can_get_published_posts()
     {
         $meta = [
-            "published_at" => now()->addDay()
+            "published_at" => now()->addDay(),
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals('Another Post', $post->title);
@@ -96,13 +95,13 @@ class PostsTest extends TestCase
         $this->assertEquals(0, Post::published()->count());
 
         $meta = [
-            "published_at" => now()
+            "published_at" => now(),
         ];
         Post::create("Previous Post", "Some post in the past", $meta);
         $this->assertEquals(1, Post::published()->count());
 
         $meta = [
-            "published_at" => now()->subDays(2)
+            "published_at" => now()->subDays(2),
         ];
         Post::create("Future Post", "Some post in the past", $meta);
         $this->assertEquals(2, Post::published()->count());
@@ -114,7 +113,7 @@ class PostsTest extends TestCase
     public function it_can_get_scheduled_posts()
     {
         $meta = [
-            "published_at" => now()->addDay()
+            "published_at" => now()->addDay(),
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals('Another Post', $post->title);
@@ -122,19 +121,19 @@ class PostsTest extends TestCase
         $this->assertEquals(1, Post::scheduled()->count());
 
         $meta = [
-            "published_at" => now()
+            "published_at" => now(),
         ];
         Post::create("Previous Post", "Some post in the past", $meta);
         $this->assertEquals(1, Post::scheduled()->count());
 
         $meta = [
-            "published_at" => now()->subDays(2)
+            "published_at" => now()->subDays(2),
         ];
         Post::create("Way back Post", "Some post in the past", $meta);
         $this->assertEquals(1, Post::scheduled()->count());
 
         $meta = [
-            "published_at" => now()->addDays(2)
+            "published_at" => now()->addDays(2),
         ];
         Post::create("Future Post", "Some post in the past", $meta);
         $this->assertEquals(2, Post::scheduled()->count());
@@ -146,19 +145,19 @@ class PostsTest extends TestCase
     public function it_can_get_posts_by_author()
     {
         $meta = [
-            'author' => $this->author
+            'author' => $this->author,
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals($this->author->name, $post->author->name);
 
         $meta = [
-            'author' => $this->author
+            'author' => $this->author,
         ];
         $post = Post::create("Another Post from same author", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals($this->author->name, $post->author->name);
 
         $meta = [
-            'author' => TestAuthorModel::create(['name' => 'Second Author'])
+            'author' => TestAuthorModel::create(['name' => 'Second Author']),
         ];
         $post = Post::create("Another Post", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals($meta['author']->name, $post->author->name);
@@ -170,13 +169,12 @@ class PostsTest extends TestCase
         $this->assertEquals(1, $postsFromSecondAuthor->count());
 
         $meta = [
-            'author' => $this->author
+            'author' => $this->author,
         ];
         $post = Post::create("Another Post from the first author", "Not really sure of what to write here! Can I get some help please?", $meta);
         $this->assertEquals($this->author->name, $post->author->name);
 
         $postsFromFirstAuthor = Post::byAuthor($this->author);
         $this->assertEquals(3, $postsFromFirstAuthor->count());
-
     }
 }
