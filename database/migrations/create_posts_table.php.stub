@@ -17,9 +17,9 @@ class CreatePostsTable extends Migration
             $table->id('id');
             $table->uuid('uuid')->unique();
             $table->text('title');
-            $table->text('slug');
+            $table->text(config('laravel-posts.save_slug_to', 'slug'))->nullable();
             $table->text('content');
-            $table->morphs('author');
+            $table->nullableMorphs('author');
             $table->json('meta')->nullable();
             $table->timestamps();
             $table->dateTime('published_at');

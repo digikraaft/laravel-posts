@@ -37,17 +37,6 @@ class LaravelPostsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/laravel-posts.php' => config_path('laravel-posts.php'),
         ], 'config');
-
-        $this->guardAgainstInvalidPostModel();
-    }
-
-    public function guardAgainstInvalidPostModel()
-    {
-        $modelClassName = config('laravel-posts.post.model_name');
-
-        if (! is_a($modelClassName, Post::class, true)) {
-            throw InvalidPostModel::create($modelClassName);
-        }
     }
 
     protected function addReadingTimeMacro()

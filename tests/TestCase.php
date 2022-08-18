@@ -36,25 +36,18 @@ abstract class TestCase extends OrchestraTestCase
             $table->softDeletes();
         });
 
-        Schema::create('designs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
-        });
-
-        Schema::create('custom_model_key_reviews', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title')->nullable();
-            $table->text('review');
-            $table->integer('rating')->nullable();
-            $table->morphs('author');
-
+        Schema::create('custom_model_key_posts', function (Blueprint $table) {
+            $table->id('id');
+            $table->uuid('uuid')->unique();
+            $table->text('title');
+            $table->text('slug');
+            $table->text('content');
             $table->string('model_type');
             $table->unsignedBigInteger('model_custom_fk');
             $table->index(['model_type', 'model_custom_fk']);
-
+            $table->json('meta')->nullable();
             $table->timestamps();
+            $table->dateTime('published_at');
             $table->softDeletes();
         });
 

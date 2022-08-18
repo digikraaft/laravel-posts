@@ -2,10 +2,8 @@
 
 namespace Digikraaft\LaravelPosts\Tests\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Digikraaft\LaravelPosts\Models\Post;
 
-class TestModel extends Model
+class TestModel extends Post
 {
-    protected $table = 'designs';
-    protected $guarded = [];
 }

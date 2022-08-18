@@ -14,6 +14,7 @@ use Rinvex\Categories\Traits\Categorizable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\ModelStatus\HasStatuses;
+use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\HasTranslatableSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\Tags\HasTags;
@@ -24,7 +25,8 @@ class Post extends Model
     protected $guarded = [];
     public $translatable = ['title', 'slug', 'content'];
 
-    use HasTags, HasStatuses, Categorizable, LogsActivity, HasTranslations, HasTranslatableSlug;
+    use HasTags, HasStatuses, Categorizable, HasTranslations, HasTranslatableSlug;
+//    use LogsActivity;
 
     protected $casts = [
         'meta' => 'array',
@@ -38,6 +40,7 @@ class Post extends Model
         return SlugOptions::create()
             ->generateSlugsFrom(config('laravel-posts.generate_slug_from', 'title'))
             ->saveSlugsTo(config('laravel-posts.save_slug_to', 'slug'))
+            ->preventOverwrite()
             ->doNotGenerateSlugsOnUpdate();
     }
 
@@ -52,10 +55,10 @@ class Post extends Model
      *
      * @return string
      */
-    public function getRouteKeyName()
-    {
-        return 'slug';
-    }
+//    public function getRouteKeyName()
+//    {
+//        return 'slug';
+//    }
 
     /**
      * Get the table associated with the model.
@@ -70,52 +73,27 @@ class Post extends Model
     /**
      * @param string $title
      * @param string $content
-     * @param array $params
+     * @param array $attributes
      * @return Post | \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      * @throws InvalidArgumentException
      */
-    public static function create(string $title, string $content, ...$params) : Post
+    public static function create(string $title, string $content, ?array $attributes = null) : Post
     {
-        if (! isset($params['author'])) {
-            static::guardAgainstInvalidAuthorModel($params['author']);
+        if (isset($attributes['author'])) {
+            static::guardAgainstInvalidAuthorModel($attributes['author']);
         }
 
-        $defaultColumns = [
-            'author',
-            'meta',
-            'published_at',
-            'created_at',
-            'updated_at',
-        ];
-        $customData = Arr::except($params, $defaultColumns);
-
-        if (empty($customData)) {
-            $post = Post::query()->create([
-                'uuid' => Str::uuid(),
-                'title' => $title,
-                'content' => $content,
-                'author_id' => $params['author']? $params['author']->getKeyName() : null,
-                'author_type' => $params['author']? $params['author']->getMorphClass() : null,
-                'meta' => $params['meta'] ?? null,
-                'created_at' => $params['created_at'] ?? Carbon::now(),
-                'updated_at' => $params['updated_at'] ?? Carbon::now(),
-                'published_at' => $params['published_at'] ?? Carbon::now(),
-            ]);
-        } else {
-            $post = Post::query()->create([
-                'uuid' => Str::uuid(),
-                'title' => $title,
-                'content' => $content,
-                'author_id' => $params['author']? $params['author']->getKeyName() : null,
-                'author_type' => $params['author']? $params['author']->getMorphClass() : null,
-                'meta' => $params['meta'] ?? null,
-                'created_at' => $params['created_at'] ?? Carbon::now(),
-                'updated_at' => $params['updated_at'] ?? Carbon::now(),
-                'published_at' => $params['published_at'] ?? Carbon::now(),
-                $customData,
-            ]);
-        }
-//        $post = Post::query()->where('uuid')
+        $post = Post::query()->create([
+            'uuid' => Str::uuid(),
+            'title' => $title,
+            'content' => $content,
+            'author_id' => isset($attributes['author']) ? $attributes['author']->getKeyName() : null,
+            'author_type' => isset($attributes['author']) ? $attributes['author']->getMorphClass() : null,
+            'meta' => $attributes['meta'] ?? null,
+            'created_at' => $attributes['created_at'] ?? Carbon::now(),
+            'updated_at' => $attributes['updated_at'] ?? Carbon::now(),
+            'published_at' => $attributes['published_at'] ?? Carbon::now(),
+        ]);
         event(new PostCreatedEvent($post));
 
         return $post;

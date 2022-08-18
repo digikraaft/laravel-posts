@@ -1,7 +1,7 @@
 # Add basic Blog/Post functionality to your Laravel app.
 ![tests](https://github.com/digikraaft/laravel-posts/workflows/tests/badge.svg?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-model-suspension/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/build-status/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/?branch=master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
@@ -15,7 +15,6 @@ This package uses the following dependencies. Please ensure to follow the instal
 - [Laravel Sluggagle](https://github.com/spatie/laravel-sluggable) by [Spatie](https://github.com/spatie)
 - [Laravel Translatable](https://github.com/spatie/laravel-translatable) by [Spatie](https://github.com/spatie)
 - [Laravel ActivityLog](https://github.com/spatie/laravel-activitylog) by [Spatie](https://github.com/spatie)
-- [Laravel Model Status](https://github.com/spatie/laravel-model-status) by [Spatie](https://github.com/spatie)
 - [Laravel Model Status](https://github.com/spatie/laravel-model-status) by [Spatie](https://github.com/spatie)
 - [Laravel Tags](https://github.com/spatie/laravel-tags) by [Spatie](https://github.com/spatie)
 
@@ -150,7 +149,7 @@ $post = Post::create($title, $content, $customDetails);
 Please ensure you have added the attributes as columns to the posts migration otherwise, Laravel will throw an exception.
 
 ### Retrieving Posts
-The Post model is a normal eloquent model so all eloquent functions and query builder can be used in retrieving posts.
+The Post model is a normal eloquent model so all eloquent methods and query builders can be used in retrieving posts.
 
 ```php
 use Digikraaft\LaravelPosts\Models\Post;
@@ -208,7 +207,7 @@ $post->readingTime(); // returns reading time in minutes
 This package uses [Laravel Sluggable](https://github.com/spatie/laravel-sluggable) by [Spatie](https://github.com/spatie) to handle categories. Please check their usage and installation instructions.
 
 ### Using Categories
-This package uses [Laravel Categories](https://github.com/rinvex/laravel-categories) by [Rinvex](https://github.com/rinvex) to handle categories. Please check the usage and installation instructions. This package however has helper classes to create
+This package uses [Laravel Categories](https://github.com/rinvex/laravel-categories) by [Rinvex](https://github.com/rinvex) to handle categories. Please check the usage and installation instructions. This package however has helper classes to use categories:
 
 ```php
 use Digikraaft\LaravelPosts\Models\Post;
