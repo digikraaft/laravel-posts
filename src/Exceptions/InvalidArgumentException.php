@@ -11,9 +11,9 @@
             return new static("Invalid Argument. Parameters can only be any of the following: ". implode(', ', $expectedParameters));
         }
 
-        public static function invalidAuthorModel()
+        public static function invalidAuthorModel(string $author)
         {
-            return new static("Invalid Author model. Author model must be an Eloquent model and therefore must extend ". Model::class);
+            return new static("Invalid Author model. Author model must be an Eloquent model and therefore must extend ". Model::class. "The model used is .". $author );
         }
 
         public static function invalidPostCategoryArgument()

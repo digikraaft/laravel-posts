@@ -77,9 +77,9 @@ class Post extends Model
      * @return Post | \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      * @throws InvalidArgumentException
      */
-    public static function create(string $title, string $content, ?array $attributes = null) : Post
+    public static function create(string $title, string $content, array $attributes = []) : Post
     {
-        if (isset($attributes['author'])) {
+        if (Arr::exists($attributes, 'author')) {
             static::guardAgainstInvalidAuthorModel($attributes['author']);
         }
 
@@ -87,13 +87,14 @@ class Post extends Model
             'uuid' => Str::uuid(),
             'title' => $title,
             'content' => $content,
-            'author_id' => isset($attributes['author']) ? $attributes['author']->getKeyName() : null,
-            'author_type' => isset($attributes['author']) ? $attributes['author']->getMorphClass() : null,
+            'author_id' => Arr::exists($attributes, 'author') ?  $attributes['author']->{$attributes['author']->getKeyName()}: null,
+            'author_type' => Arr::exists($attributes, 'author') ? $attributes['author']->getMorphClass() : null,
             'meta' => $attributes['meta'] ?? null,
             'created_at' => $attributes['created_at'] ?? Carbon::now(),
             'updated_at' => $attributes['updated_at'] ?? Carbon::now(),
             'published_at' => $attributes['published_at'] ?? Carbon::now(),
         ]);
+
         event(new PostCreatedEvent($post));
 
         return $post;
@@ -101,7 +102,7 @@ class Post extends Model
 
     public function author(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo('author');
     }
 
     private static function guardAgainstInvalidAuthorModel($author)
@@ -142,14 +143,14 @@ class Post extends Model
     public static function scheduled(?Carbon $from = null, ?Carbon $to = null)
     {
         if (! $from && ! $to) {
-            return Post::query()->where('published_at', '>=', Carbon::now())->get();
+            return Post::query()->where('published_at', '>', Carbon::now())->get();
         }
 
         if ($from->greaterThan($to)) {
             throw InvalidDate::from();
         }
 
-        return Post::query()->where('published_at', '>=', Carbon::now())->whereBetween(
+        return Post::query()->where('published_at', '>', Carbon::now())->whereBetween(
             'published_at',
             [$from->toDateTimeString(), $to->toDateTimeString()]
         )->get();
@@ -159,6 +160,6 @@ class Post extends Model
     {
         static::guardAgainstInvalidAuthorModel($author);
 
-        return Post::query()->where('author_id', $author->getKeyName())->where('author_type', $author->getMorphClass())->get();
+        return Post::query()->where('author_id', $author->{$author->getKeyName()})->where('author_type', $author->getMorphClass())->get();
     }
 }
