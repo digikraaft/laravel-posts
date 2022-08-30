@@ -116,7 +116,7 @@ $post = Post::create($title, $content, $additionalDetails);
 ```
 Please note that the author `$author` must be an eloquent model otherwise an exception `Digikraaft\LaravelPosts\Exceptions\InvalidArgumentException` will be thrown.
 
-All attributes are optional. If you need to add additional information about a post, you can use the `meta` attribute like this:
+All attributes are optional. If you need to add additional information about a post, you can use the `meta` attribute this way:
 ```php
 use Digikraaft\LaravelPosts\Models\Post;
 
