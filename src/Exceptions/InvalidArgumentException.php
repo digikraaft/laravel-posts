@@ -13,7 +13,7 @@
 
         public static function invalidAuthorModel(string $author)
         {
-            return new static("Invalid Author model. Author model must be an Eloquent model and therefore must extend ". Model::class. "The model used is .". $author );
+            return new static("Invalid Author model. Author model must be an Eloquent model and therefore must extend ". Model::class. "The model used is .". $author);
         }
 
         public static function invalidPostCategoryArgument()
