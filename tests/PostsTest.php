@@ -9,7 +9,6 @@ use Digikraaft\LaravelPosts\Models\Post;
 use Digikraaft\LaravelPosts\Tests\Models\InvalidAuthorModel;
 use Digikraaft\LaravelPosts\Tests\Models\TestAuthorModel;
 use Digikraaft\LaravelPosts\Tests\Models\TestModel;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 class PostsTest extends TestCase

@@ -228,6 +228,47 @@ $post->categories;
 $post->categories();
 ```
 
+### Using Tags
+This package uses [Laravel Tags](https://github.com/spatie/laravel-tags) by [Spatie](https://github.com/spatie) to handle tags. Please check the usage and installation instructions. Here are a few ways to use:
+
+```php
+use Digikraaft\LaravelPosts\Models\Post;
+
+//attach tags
+$post = Post::find(1);
+
+//attach single tag
+$post->attachTag('first tag');
+
+//multiple tags
+$tags = ['second tag', 'third tag', 'fourth tag', 'fifth tag'];
+$post->attachTags($tags);
+
+$post->attachTags(['sixth_tag','seventh_tag'],'some_type');
+
+
+// detaching tags
+$post->detachTags('third tag');
+$post->detachTags(['fourth tag', 'fifth tag']);
+
+// Get all post tags
+$post->tags;
+
+// retrieving tags with a type
+$post->tagsWithType('some_type'); 
+
+// syncing tags
+$post->syncTags(['first tag', 'second tag']); // all other tags on this model will be detached
+
+// retrieving post that have any of the given tags
+Post::withAnyTags(['first tag', 'second tag'])->get();
+
+// retrieve posts that have all of the given tags
+Post::withAllTags(['first tag', 'second tag'])->get();
+```
+For more tag usage, checkout the [documentation](https://github.com/spatie/laravel-tags)
+
+
 ### Events
 The `Digikraaft\LaravelPosts\Events\PostCreatedEvent` event will be dispatched when a post has been created. You can listen to this event and take necessary actions.
 An instance of the post will be passed to the event class and can be accessed for use:
