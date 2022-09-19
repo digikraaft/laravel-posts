@@ -146,7 +146,7 @@ $customDetails = [
 ];
 $post = Post::create($title, $content, $customDetails);
 ```
-Please ensure you have added the attributes as columns to the posts migration otherwise, Laravel will throw an exception.
+Please ensure you have added the attributes as columns to the `posts` migration otherwise, Laravel will throw an exception.
 
 ### Retrieving Posts
 The Post model is a normal eloquent model so all eloquent methods and query builders can be used in retrieving posts.
