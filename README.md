@@ -1,9 +1,7 @@
 # Add basic Blog/Post functionality to your Laravel app.
-![tests](https://github.com/digikraaft/laravel-posts/workflows/tests/badge.svg?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/build.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/build-status/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/?branch=master)
-[![Code Intelligence Status](https://scrutinizer-ci.com/g/digikraaft/laravel-posts/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/digikraaft/laravel-posts/tests?label=tests)](https://github.com/digikraaft/laravel-posts/actions?query=workflow%3Atests)
+[![GitHub Check and fix styling](https://github.com/digikraaft/laravel-posts/workflows/Check%20&%20fix%20styling/badge.svg)](https://github.com/digikraaft/laravel-posts/actions?query=workflow%3A%22Check+%26+fix+styling%22)
+[![MIT Licensed](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 
 ## Why this package?
 This package provides a simple blog functionality for use in a Laravel app. This is an opinionated package. We have had to implement blog functionalities in different Laravel projects and decided to abstract this into a package which can be easily used across our projects. If you find it useful and meets your needs, by all means please use it. Suggested improvements are welcome.
