@@ -1,10 +1,10 @@
-build
+/build
 composer.lock
 docs
-vendor
+/vendor/
 coverage
 .phpunit.result.cache
-.idea
+/.idea
 .php_cs.cache
 phpunit.xml
 
